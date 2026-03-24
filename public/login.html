@@ -5,454 +5,195 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>登录 - AIX Cloud</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.min.css">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --text-primary: #1a1a1a;
+      --text-secondary: #6b7280;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f9fafb;
+      --border-color: #e5e7eb;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body { 
-      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #0f0c29 0%, #1a1a2e 50%, #16213e 100%);
-      position: relative;
-      overflow: hidden;
-    }
-    body::before {
-      content: '';
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(139, 69, 219, 0.15) 0%, transparent 70%);
-      top: -200px;
-      right: -200px;
-      animation: float 8s ease-in-out infinite;
-    }
-    body::after {
-      content: '';
-      position: absolute;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%);
-      bottom: -150px;
-      left: -150px;
-      animation: float 10s ease-in-out infinite reverse;
-    }
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0); }
-      50% { transform: translate(30px, 30px); }
+      background: var(--bg-secondary);
     }
     .login-wrapper {
       width: 100%;
-      max-width: 380px;
-      padding: 16px;
-      position: relative;
-      z-index: 1;
+      max-width: 400px;
+      padding: 40px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
     }
-    .login-header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-    .login-header .logo {
-      width: 56px;
-      height: 56px;
-      background: linear-gradient(135deg, #8b5cf6, #ec4899);
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 12px;
-      font-size: 24px;
-      color: white;
-      box-shadow: 0 12px 24px rgba(139, 92, 246, 0.3);
-    }
-    .login-header h1 {
-      color: white;
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .login-header p {
-      color: #9ca3af;
-      font-size: 12px;
-    }
-    .login-card {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-      backdrop-filter: blur(20px);
-    }
-    .login-card .mb-3 {
-      margin-bottom: 12px !important;
-    }
-    .login-card .form-label {
-      font-size: 13px;
-      margin-bottom: 4px;
-    }
-    .login-card .form-control-custom {
-      padding: 10px 12px;
-      font-size: 14px;
-    }
-    .login-card .btn-primary-custom {
-      padding: 12px;
-      font-size: 15px;
-      margin-top: 8px;
-    }
-    .nav-tabs-custom {
-      border: none;
-      background: #f1f5f9;
-      border-radius: 10px;
-      padding: 3px;
-      margin-bottom: 20px;
-    }
-    .nav-tabs-custom .nav-link {
-      border: none;
-      background: transparent;
-      color: #64748b;
-      font-weight: 600;
-      padding: 8px 16px;
-      font-size: 14px;
+    .login-header { text-align: center; margin-bottom: 32px; }
+    .login-header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: var(--primary); }
+    .login-header p { color: var(--text-secondary); font-size: 14px; }
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-weight: 500; margin-bottom: 8px; color: var(--text-primary); }
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
       border-radius: 8px;
-      transition: all 0.3s ease;
-    }
-    .nav-tabs-custom .nav-link.active {
-      background: white;
-      color: #8b5cf6;
-      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
-    }
-    .form-control-custom {
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 14px 16px;
       font-size: 15px;
-      transition: all 0.3s ease;
-      background: #f8fafc;
+      transition: all 0.2s;
     }
-    .form-control-custom:focus {
-      border-color: #8b5cf6;
-      box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
-      background: white;
-    }
-    .btn-primary-custom {
-      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-      border: none;
-      border-radius: 12px;
+    .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+    .btn-primary {
+      width: 100%;
       padding: 14px;
-      font-weight: 600;
-      font-size: 16px;
-      transition: all 0.3s ease;
-      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
-    }
-    .btn-primary-custom:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 28px rgba(139, 92, 246, 0.4);
-    }
-    .btn-primary-custom:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-    .btn-send-code {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
+      background: var(--primary);
       border: none;
-      border-radius: 10px;
-      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 16px;
       font-weight: 600;
-      font-size: 14px;
       color: white;
-      transition: all 0.3s ease;
+      cursor: pointer;
+      transition: all 0.2s;
     }
-    .btn-send-code:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-    }
-    .btn-send-code:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-    .back-link {
-      display: block;
-      text-align: center;
-      margin-top: 24px;
-      color: #9ca3af;
-      text-decoration: none;
-      font-size: 14px;
-      transition: color 0.3s ease;
-    }
-    .back-link:hover {
-      color: white;
-    }
-    .form-label {
-      font-weight: 500;
-      color: #374151;
-      margin-bottom: 8px;
-    }
-    .input-group-custom .form-control-custom {
-      border-radius: 12px 0 0 12px;
-    }
-    .input-group-custom .btn {
-      border-radius: 0 12px 12px 0;
-    }
-    .password-mismatch {
-      border-color: #ef4444 !important;
-    }
-    .error-text {
-      color: #ef4444;
-      font-size: 12px;
-      margin-top: 4px;
-    }
-    .success-text {
-      color: #10b981;
-      font-size: 12px;
-      margin-top: 4px;
-    }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .login-footer { text-align: center; margin-top: 24px; color: var(--text-secondary); font-size: 14px; }
+    .login-footer a { color: var(--primary); text-decoration: none; }
+    .login-footer a:hover { text-decoration: underline; }
+    .tabs { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 24px; }
+    .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; color: var(--text-secondary); border-bottom: 2px solid transparent; transition: all 0.2s; }
+    .tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
   </style>
 </head>
 <body>
   <div class="login-wrapper">
     <div class="login-header">
-      <div class="logo">
-        <i class="bi bi-cloud-fill"></i>
-      </div>
       <h1>AIX Cloud</h1>
-      <p>统一行业认证智能模型接口</p>
+      <p>统一大模型 API 平台</p>
     </div>
     
-    <div class="login-card">
-      <ul class="nav nav-tabs-custom" role="tablist">
-        <li class="nav-item">
-          <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#login">登录</button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#register">注册</button>
-        </li>
-      </ul>
-
-      <div class="tab-content">
-        <!-- 登录表单 -->
-        <div class="tab-pane fade show active" id="login">
-          <form onsubmit="handleLogin(event)">
-            <div class="mb-3">
-              <label class="form-label">邮箱地址</label>
-              <input type="email" class="form-control form-control-custom" id="loginEmail" placeholder="your@email.com" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">邮箱验证码</label>
-              <div class="input-group input-group-custom">
-                <input type="text" class="form-control form-control-custom" id="loginCode" placeholder="请输入6位验证码" maxlength="6" required>
-                <button type="button" class="btn btn-send-code" onclick="sendCode(event, 'login')">获取验证码</button>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">密码</label>
-              <input type="password" class="form-control form-control-custom" id="loginPassword" placeholder="请输入密码" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100 btn-primary-custom">登 录</button>
-          </form>
-        </div>
-        
-        <!-- 注册表单 -->
-        <div class="tab-pane fade" id="register">
-          <form onsubmit="handleRegister(event)">
-            <div class="mb-3">
-              <label class="form-label">邮箱地址</label>
-              <input type="email" class="form-control form-control-custom" id="regEmail" placeholder="your@email.com" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">邮箱验证码</label>
-              <div class="input-group input-group-custom">
-                <input type="text" class="form-control form-control-custom" id="regCode" placeholder="请输入6位验证码" maxlength="6" required>
-                <button type="button" class="btn btn-send-code" onclick="sendCode(event, 'register')">获取验证码</button>
-              </div>
-              <div id="regCodeMsg"></div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">名称</label>
-              <input type="text" class="form-control form-control-custom" id="regName" placeholder="您的名称">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">密码</label>
-              <input type="password" class="form-control form-control-custom" id="regPassword" placeholder="至少6位密码" required minlength="6">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">确认密码</label>
-              <input type="password" class="form-control form-control-custom" id="regPasswordConfirm" placeholder="请再次输入密码" required>
-              <div id="passwordMsg"></div>
-            </div>
-            <button type="submit" class="btn btn-primary w-100 btn-primary-custom">注 册</button>
-          </form>
-        </div>
-      </div>
+    <div class="tabs">
+      <div class="tab active" data-tab="login">登录</div>
+      <div class="tab" data-tab="register">注册</div>
     </div>
 
-    <a href="/" class="back-link">← 返回首页</a>
+    <div class="tab-content active" id="login">
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">邮箱</label>
+          <input type="email" class="form-control" id="loginEmail" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">密码</label>
+          <input type="password" class="form-control" id="loginPassword" required>
+        </div>
+        <button type="submit" class="btn-primary">登录</button>
+      </form>
+    </div>
+
+    <div class="tab-content" id="register">
+      <form onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label class="form-label">邮箱</label>
+          <input type="email" class="form-control" id="registerEmail" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">验证码</label>
+          <div style="display: flex; gap: 12px;">
+            <input type="text" class="form-control" id="registerCode" required style="flex: 1;">
+            <button type="button" class="btn-primary" id="sendCodeBtn" onclick="sendCode()" style="width: auto; padding: 12px 16px;">发送验证码</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">密码</label>
+          <input type="password" class="form-control" id="registerPassword" required>
+        </div>
+        <button type="submit" class="btn-primary">注册</button>
+      </form>
+    </div>
+
+    <div class="login-footer">
+      <p>登录即表示同意 <a href="/terms">服务条款</a> 和 <a href="/privacy">隐私政策</a></p>
+    </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    let emailCodeSent = false;
-    let countdownTimer = null;
-
-    async function sendCode(event, type) {
-      const emailEl = type === 'login' ? document.getElementById('loginEmail') : document.getElementById('regEmail');
-      const email = emailEl.value;
-      
-      if (!email || !email.includes('@')) {
-        alert('请先输入有效的邮箱地址');
-        return;
-      }
-
-      const btn = event.target;
-      btn.disabled = true;
-      btn.textContent = '发送中...';
-
-      try {
-        const res = await fetch('/user/send-code', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, type: type })
-        });
-
-        const data = await res.json();
-        
-        if (res.ok) {
-          alert('验证码已发送到您的邮箱');
-          emailCodeSent = true;
-          
-          let countdown = 60;
-          btn.disabled = true;
-          btn.textContent = `${countdown}秒后重发`;
-          
-          countdownTimer = setInterval(() => {
-            countdown--;
-            if (countdown <= 0) {
-              clearInterval(countdownTimer);
-              btn.disabled = false;
-              btn.textContent = '获取验证码';
-            } else {
-              btn.textContent = `${countdown}秒后重发`;
-            }
-          }, 1000);
-        } else {
-          alert(data.error || '发送失败，请稍后重试');
-          btn.disabled = false;
-          btn.textContent = '获取验证码';
-        }
-      } catch (err) {
-        alert('发送失败，请稍后重试');
-        btn.disabled = false;
-        btn.textContent = '获取验证码';
-      }
-    }
+    const API_BASE = '';
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
 
     async function handleLogin(e) {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value;
-      const code = document.getElementById('loginCode').value;
       const password = document.getElementById('loginPassword').value;
-
-      if (!code || code.length !== 6) {
-        alert('请输入6位验证码');
-        return;
-      }
-
       try {
-        const res = await fetch('/user/login', {
+        const res = await fetch(API_BASE + '/user/login', {
           method: 'POST',
-          credentials: 'same-origin',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, code, password })
+          body: JSON.stringify({ email, password })
         });
-        
         const data = await res.json();
-        
-        if (res.ok && data.session_token) {
-          const loginTime = Date.now() + (7 * 24 * 60 * 60 * 1000);
-          localStorage.setItem('session_token', data.session_token);
-          localStorage.setItem('user_email', data.user.email);
-          localStorage.setItem('login_expire', loginTime);
-          window.location.href = '/dashboard';
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          location.href = '/dashboard';
+        } else {
+          alert(data.error?.message || '登录失败');
         }
-      } catch (err) {
-        alert('登录失败，请稍后重试');
-      }
+      } catch (err) { alert('登录失败'); }
     }
 
     async function handleRegister(e) {
       e.preventDefault();
-      const email = document.getElementById('regEmail').value;
-      const code = document.getElementById('regCode').value;
-      const name = document.getElementById('regName').value;
-      const password = document.getElementById('regPassword').value;
-      const passwordConfirm = document.getElementById('regPasswordConfirm').value;
-      const passwordMsg = document.getElementById('passwordMsg');
-
-      if (password !== passwordConfirm) {
-        passwordMsg.innerHTML = '<span class="error-text">两次密码输入不一致</span>';
-        document.getElementById('regPasswordConfirm').classList.add('password-mismatch');
-        return;
-      }
-
-      passwordMsg.innerHTML = '';
-      document.getElementById('regPasswordConfirm').classList.remove('password-mismatch');
-
-      if (!code || code.length !== 6) {
-        alert('请输入6位验证码');
-        return;
-      }
-
-      if (!emailCodeSent) {
-        alert('请先获取邮箱验证码');
-        return;
-      }
-      
+      const email = document.getElementById('registerEmail').value;
+      const code = document.getElementById('registerCode').value;
+      const password = document.getElementById('registerPassword').value;
       try {
-        const res = await fetch('/user/register', {
+        const res = await fetch(API_BASE + '/user/register', {
           method: 'POST',
-          credentials: 'same-origin',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, code, password, name })
+          body: JSON.stringify({ email, code, password })
         });
-        
         const data = await res.json();
-        
-        if (res.ok && data.session_token) {
-          const loginTime = Date.now() + (7 * 24 * 60 * 60 * 1000);
-          localStorage.setItem('session_token', data.session_token);
-          localStorage.setItem('user_email', data.user.email);
-          localStorage.setItem('login_expire', loginTime);
-          window.location.href = '/dashboard';
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          location.href = '/dashboard';
         } else {
-          alert(data.error || '注册失败');
+          alert(data.error?.message || '注册失败');
         }
-      } catch (err) {
-        alert('注册失败，请稍后重试');
-      }
+      } catch (err) { alert('注册失败'); }
     }
 
-    document.getElementById('regPasswordConfirm').addEventListener('input', function() {
-      const password = document.getElementById('regPassword').value;
-      const passwordMsg = document.getElementById('passwordMsg');
-      
-      if (this.value && this.value !== password) {
-        passwordMsg.innerHTML = '<span class="error-text">两次密码输入不一致</span>';
-        this.classList.add('password-mismatch');
-      } else if (this.value && this.value === password) {
-        passwordMsg.innerHTML = '<span class="success-text">✓ 密码一致</span>';
-        this.classList.remove('password-mismatch');
-      } else {
-        passwordMsg.innerHTML = '';
-        this.classList.remove('password-mismatch');
-      }
-    });
-
-    (function autoLogin() {
-      const expire = localStorage.getItem('login_expire');
-      if (expire && Date.now() < parseInt(expire)) {
-        window.location.href = '/dashboard';
-      }
-    })();
+    async function sendCode() {
+      const email = document.getElementById('registerEmail').value;
+      if (!email) return alert('请输入邮箱');
+      const btn = document.getElementById('sendCodeBtn');
+      btn.disabled = true;
+      let countdown = 60;
+      const interval = setInterval(() => {
+        btn.textContent = `${countdown}s`;
+        countdown--;
+        if (countdown < 0) {
+          clearInterval(interval);
+          btn.disabled = false;
+          btn.textContent = '发送验证码';
+        }
+      }, 1000);
+      await fetch(API_BASE + '/user/send-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+    }
   </script>
 </body>
 </html>

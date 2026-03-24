@@ -11,223 +11,74 @@
     :root {
       --primary: #6366f1;
       --primary-dark: #4f46e5;
-      --primary-light: #818cf8;
-      --light-bg: #f8fafc;
-      --glass-bg: rgba(255, 255, 255, 0.06);
-      --glass-border: rgba(255, 255, 255, 0.12);
+      --text-primary: #1a1a1a;
+      --text-secondary: #6b7280;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f9fafb;
+      --border-color: #e5e7eb;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
-      background: #ffffff;
-      color: #1e293b;
-      min-height: 100vh;
-    }
-    .navbar {
-      background: rgba(3, 7, 18, 0.9) !important;
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--glass-border);
-      padding: 16px 0;
-    }
-    .navbar-brand {
-      font-size: 24px;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--primary-light), var(--primary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .nav-link {
-      color: rgba(255, 255, 255, 0.7) !important;
-      font-weight: 500;
-      padding: 8px 20px !important;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-    }
-    .nav-link:hover, .nav-link.active {
-      color: #fff !important;
-      background: var(--glass-bg);
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border: none;
-      padding: 10px 24px;
-      border-radius: 10px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
-    }
-    .container { max-width: 1200px; padding: 100px 24px 60px; }
-    .page-header {
-      text-align: center;
-      margin-bottom: 60px;
-    }
-    .page-header h1 {
-      font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-    .page-header p {
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 1.125rem;
-    }
-    .model-card {
-      background: linear-gradient(145deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      padding: 28px;
-      transition: all 0.3s ease;
-      height: 100%;
-    }
-    .model-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--primary);
-      box-shadow: 0 12px 40px rgba(99, 102, 241, 0.2);
-    }
-    .model-icon {
-      width: 56px;
-      height: 56px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    .model-card h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    .model-card p {
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 0.9rem;
-      margin-bottom: 16px;
-      line-height: 1.6;
-    }
-    .model-badge {
-      display: inline-block;
-      background: rgba(99, 102, 241, 0.15);
-      color: var(--primary-light);
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      margin-right: 8px;
-      margin-bottom: 8px;
-    }
-    footer {
-      background: rgba(0, 0, 0, 0.5);
-      border-top: 1px solid var(--glass-border);
-      padding: 60px 0 30px;
-    }
-    footer a {
-      color: rgba(255, 255, 255, 0.6);
-      text-decoration: none;
-      display: block;
-      margin-bottom: 12px;
-      transition: color 0.3s;
-    }
-    footer a:hover { color: var(--primary-light); }
-    footer h5 { color: #1e293b; font-weight: 600; margin-bottom: 20px; }
-    footer p { color: rgba(255, 255, 255, 0.5); }
-    .footer-bottom {
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid var(--glass-border);
-      text-align: center;
-      color: rgba(255, 255, 255, 0.4);
-      font-size: 14px;
-    }
-    .spinner-border { border-color: var(--primary); border-right-color: transparent; }
-    @media (max-width: 768px) {
-      .page-header h1 { font-size: 2rem; }
-    }
+    * { box-sizing: border-box; }
+    body { font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--bg-primary); color: var(--text-primary); margin: 0; }
+    .navbar { background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); padding: 16px 0; position: fixed; width: 100%; top: 0; z-index: 1000; }
+    .navbar-brand { font-size: 22px; font-weight: 700; color: var(--primary) !important; text-decoration: none; }
+    .nav-link { color: var(--text-secondary) !important; font-weight: 500; padding: 8px 16px !important; border-radius: 8px; transition: all 0.2s; text-decoration: none; }
+    .nav-link:hover { color: var(--text-primary) !important; background: var(--bg-secondary); }
+    .btn-primary { background: var(--primary); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; color: white; text-decoration: none; }
+    .page-header { padding: 140px 0 60px; background: var(--bg-secondary); text-align: center; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 12px; }
+    .page-header p { color: var(--text-secondary); font-size: 1.125rem; }
+    .model-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding: 40px 0; }
+    .model-card { background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; transition: all 0.3s; }
+    .model-card:hover { border-color: var(--primary); box-shadow: 0 8px 30px rgba(99, 102, 241, 0.1); transform: translateY(-4px); }
+    .model-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .model-icon { width: 48px; height: 48px; background: var(--bg-secondary); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--primary); font-size: 18px; }
+    .model-name { font-weight: 600; margin: 0; }
+    .model-provider { color: var(--text-secondary); font-size: 14px; margin: 0; }
+    .model-price { display: flex; gap: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 14px; color: var(--text-secondary); }
+    footer { background: var(--bg-primary); border-top: 1px solid var(--border-color); padding: 40px 0; text-align: center; }
+    footer a { color: var(--text-secondary); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--primary); }
+    footer p { color: var(--text-secondary); font-size: 14px; }
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg fixed-top">
+  <nav class="navbar navbar-expand-lg">
     <div class="container">
       <a class="navbar-brand" href="/">AIX Cloud</a>
-      <button class="navbar-toggler bg-transparent border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <i class="bi bi-list text-white fs-1"></i>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
+      <div class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto">
-          <li class="nav-item"><a class="nav-link active" href="/models">模型</a></li>
+          <li class="nav-item"><a class="nav-link" href="/models">模型</a></li>
           <li class="nav-item"><a class="nav-link" href="/chat">聊天</a></li>
-          <li class="nav-item"><a class="nav-link" href="/industries">千行百业</a></li>
           <li class="nav-item"><a class="nav-link" href="/rankings">排行</a></li>
           <li class="nav-item"><a class="nav-link" href="/pricing">价格</a></li>
           <li class="nav-item"><a class="nav-link" href="/docs">文档</a></li>
         </ul>
         <ul class="navbar-nav">
           <li class="nav-item"><a class="nav-link" href="/login">登录</a></li>
-          <li class="nav-item"><a class="btn btn-primary ms-2" href="/login">开始使用</a></li>
+          <li class="nav-item"><a class="btn btn-primary" href="/login">开始使用</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <div class="container">
-    <div class="page-header">
+  <div class="page-header">
+    <div class="container">
       <h1>模型列表</h1>
       <p>探索 AIX Cloud 支持的顶尖 AI 模型</p>
     </div>
-    
-    <div class="row g-4" id="modelsList">
-      <div class="col-12 text-center py-5">
-        <div class="spinner-border text-primary"></div>
-      </div>
-    </div>
+  </div>
+
+  <div class="container">
+    <div class="model-grid" id="featured-models"></div>
   </div>
 
   <footer>
-    <div class="container text-center">
-      <p class="mb-2">统一大模型 API 平台，让 AI 开发更简单。</p>
+    <div class="container">
       <p>© 2026 AIX Cloud. All rights reserved.</p>
     </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    async function loadModels() {
-      try {
-        const res = await fetch('/v1/models');
-        const data = await res.json();
-        
-        const container = document.getElementById('modelsList');
-        
-        if (!data.data || data.data.length === 0) {
-          container.innerHTML = '<div class="col-12"><p class="text-center" style="opacity:0.6;">暂无模型</p></div>';
-          return;
-        }
-        
-        container.innerHTML = data.data.map(m => `
-          <div class="col-md-6 col-lg-4">
-            <div class="model-card">
-              <div class="model-icon">
-                <i class="bi bi-robot"></i>
-              </div>
-              <h3>${m.display_name || m.id}</h3>
-              <p>${m.description || '暂无描述'}</p>
-              <div>
-                <span class="model-badge">${m.owned_by}</span>
-                <span class="model-badge">上下文: ${m.context_length ? (m.context_length / 1000) + 'K' : 'N/A'}</span>
-              </div>
-              <a href="/chat?model=${m.id}" class="btn btn-primary btn-sm mt-3">开始聊天</a>
-            </div>
-          </div>
-        `).join('');
-      } catch (e) {
-        document.getElementById('modelsList').innerHTML = '<div class="col-12"><p class="text-center text-danger">加载失败，请稍后重试</p></div>';
-      }
-    }
-    loadModels();
-  </script>
+  <script src="/js/main.js"></script>
 </body>
 </html>
