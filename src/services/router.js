@@ -352,41 +352,17 @@ async function updateProviderHealth(providerId, success, statusCode) {
 }
 
 async function listModels() {
-  return [
-    {
-      model_name: 'AIII-Fast',
-      display_name: 'AIII-Fast',
-      description: 'AIII Cloud 快速模型 - 128K 上下文',
-      input_price_per_1k_tokens: 0,
-      output_price_per_1k_tokens: 0,
-      context_length: 128000,
-      modality: 'text',
-      supports_stream: true,
-      provider: 'AIII'
-    },
-    {
-      model_name: 'AIII-Tech',
-      display_name: 'AIII-Tech',
-      description: 'AIII Cloud 智能模型',
-      input_price_per_1k_tokens: 0,
-      output_price_per_1k_tokens: 0,
-      context_length: 262144,
-      modality: 'text',
-      supports_stream: true,
-      provider: 'AIII'
-    },
-    {
-      model_name: 'AIII-Code',
-      display_name: 'AIII-Code',
-      description: 'AIII Cloud 代码模型 - Kimi-K2.5/GLM-5/MiniMax-M2.5 自动选择',
-      input_price_per_1k_tokens: 0,
-      output_price_per_1k_tokens: 0,
-      context_length: 256000,
-      modality: 'text',
-      supports_stream: true,
-      provider: 'AIII'
-    }
-  ];
+  const result = await db.query(`
+    SELECT m.model_name, m.display_name, m.description, 
+           m.input_price_per_1k_tokens, m.output_price_per_1k_tokens,
+           m.context_length, m.modality, m.supports_stream,
+           p.name as provider
+    FROM models m
+    JOIN providers p ON m.provider_id = p.id
+    WHERE m.enabled = true AND p.enabled = true
+    ORDER BY m.id
+  `);
+  return result.rows;
 }
 
 module.exports = {
