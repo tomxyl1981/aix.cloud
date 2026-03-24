@@ -25,7 +25,7 @@ async function loadFeaturedModels() {
     
     container.innerHTML = featured.map(m => `
       <div class="col-md-4 col-sm-6">
-        <div class="model-card" onclick="location.href='/models#${m.id}'">
+        <div class="model-card h-100">
           <div class="model-header">
             <div class="model-icon">${m.id.charAt(0).toUpperCase()}</div>
             <div>
@@ -33,9 +33,9 @@ async function loadFeaturedModels() {
               <p class="model-provider">${m.architecture?.modality || 'text'}</p>
             </div>
           </div>
-          <div class="model-price">
-            <span>输入: $${m.pricing?.prompt || '0'}/1K</span>
-            <span>输出: $${m.pricing?.completion || '0'}/1K</span>
+          <div class="model-price mt-auto">
+            <span>输入: $${parseFloat(m.pricing?.prompt || 0).toFixed(2)}/1K</span>
+            <span>输出: $${parseFloat(m.pricing?.completion || 0).toFixed(2)}/1K</span>
           </div>
         </div>
       </div>
