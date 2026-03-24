@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIII Cloud - 统一大模型 API 平台</title>
+  <meta name="description" content="一个 API 接入所有大模型。更低价格、更稳定服务、无需订阅。">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+      --dark: #0f172a;
+      --dark-bg: #030712;
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --gold: #d4af37;
+      --gold-light: #f5d76e;
+    }
+
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      background: var(--dark-bg);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* Premium Navbar */
+    .navbar {
+      background: rgba(3, 7, 18, 0.85) !important;
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 16px 0;
+      transition: all 0.3s ease;
+    }
+
+    .navbar.scrolled {
+      padding: 12px 0;
+      background: rgba(3, 7, 18, 0.95) !important;
+    }
+
+    .navbar-brand {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-light), var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-link {
+      color: rgba(255, 255, 255, 0.7) !important;
+      font-weight: 500;
+      padding: 8px 20px !important;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: #fff !important;
+      background: var(--glass-bg);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border: none;
+      padding: 10px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+      background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    }
+
+    .btn-outline-light {
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 10px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-light:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 120px 0 80px;
+      background: linear-gradient(180deg, #030712 0%, #0a0a0f 100%);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(99, 102, 241, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-size: 4rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 24px;
+      color: #fff;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+    }
+
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, #f5d76e 0%, #d4af37 50%, #f5d76e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 40px;
+      line-height: 1.8;
+      text-shadow: 0 1px 10px rgba(0,0,0,0.5);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 48px;
+      margin-top: 60px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 4px;
+    }
+
+    /* Provider Grid */
+    .provider-section {
+      position: relative;
+      z-index: 1;
+    }
+
+    .provider-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+      margin-top: 60px;
+    }
+
+    .provider-item {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 24px 16px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .provider-item:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--primary);
+      box-shadow: 0 8px 30px rgba(99, 102, 241, 0.2);
+    }
+
+    .provider-item img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      margin-bottom: 12px;
+      filter: brightness(0) invert(1);
+    }
+
+    .provider-item span {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
+    }
+
+    /* Features Section */
+    .features-section {
+      padding: 120px 0;
+      position: relative;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-title h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .section-title p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1.125rem;
+    }
+
+    .feature-card {
+      background: linear-gradient(145deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px 32px;
+      transition: all 0.4s ease;
+      height: 100%;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.04) 100%);
+      border-color: rgba(99, 102, 241, 0.5);
+      box-shadow: 0 20px 60px rgba(99, 102, 241, 0.15);
+    }
+
+    .feature-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+    }
+
+    .feature-card h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .feature-card p {
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.7;
+    }
+
+    /* Code Section */
+    .code-section {
+      padding: 120px 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.05) 100%);
+    }
+
+    .code-block {
+      background: linear-gradient(145deg, #0a0a0f 0%, #12121a 100%);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 32px;
+      font-family: 'JetBrains Mono', 'Consolas', monospace;
+      font-size: 14px;
+      line-height: 1.8;
+      overflow-x: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .code-block .keyword { color: #c792ea; }
+    .code-block .string { color: #c3e88d; }
+    .code-block .function { color: #82aaff; }
+    .code-block .comment { color: #546e7a; }
+
+    .quick-start-card {
+      background: linear-gradient(145deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px;
+    }
+
+    .quick-start-card h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .quick-start-card ol {
+      padding-left: 20px;
+    }
+
+    .quick-start-card li {
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .quick-start-card .btn {
+      margin-top: 16px;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 120px 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-section h2 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .cta-section p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1.25rem;
+      margin-bottom: 40px;
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(0, 0, 0, 0.5);
+      border-top: 1px solid var(--glass-border);
+      padding: 80px 0 40px;
+      text-align: center;
+    }
+
+    footer h5 {
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    footer a {
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      transition: color 0.3s ease;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    footer a:hover {
+      color: var(--primary-light);
+    }
+
+    footer p {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    footer .footer-bottom {
+      margin-top: 60px;
+      padding-top: 30px;
+      border-top: 1px solid var(--glass-border);
+      text-align: center;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .hero h1 { font-size: 2.5rem; }
+      .provider-grid { grid-template-columns: repeat(3, 1fr); }
+      .hero-stats { gap: 24px; }
+      .stat-number { font-size: 2rem; }
+    }
+
+    @media (max-width: 768px) {
+      .hero { padding: 100px 0 60px; }
+      .hero h1 { font-size: 2rem; }
+      .provider-grid { grid-template-columns: repeat(2, 1fr); }
+      .feature-card { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg fixed-top" id="navbar">
+    <div class="container">
+      <a class="navbar-brand" href="/">AIII Cloud</a>
+      <button class="navbar-toggler bg-transparent border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <i class="bi bi-list text-white fs-1"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="/models">模型</a></li>
+          <li class="nav-item"><a class="nav-link" href="/chat">聊天</a></li>
+          <li class="nav-item"><a class="nav-link" href="/industries">千行百业</a></li>
+          <li class="nav-item"><a class="nav-link" href="/rankings">排行</a></li>
+          <li class="nav-item"><a class="nav-link" href="/pricing">价格</a></li>
+          <li class="nav-item"><a class="nav-link" href="/docs">文档</a></li>
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="/login">登录</a></li>
+          <li class="nav-item"><a class="btn btn-primary ms-2" href="/login">开始使用</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 hero-content">
+          <h1>统一行业认证<br><span class="highlight">智能模型接口</span></h1>
+          <p>打造世界人工智能安全高地。一个认证，全球通用，赋能全球1000+行业智能体。</p>
+          <div class="d-flex gap-3">
+            <a href="/login" class="btn btn-primary btn-lg">获取 API Key</a>
+            <a href="/models" class="btn btn-outline-light btn-lg">浏览模型</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-number">30T</div>
+              <div class="stat-label">月度 Token</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">5M+</div>
+              <div class="stat-label">全球用户</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">60+</div>
+              <div class="stat-label">活跃供应商</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 provider-section">
+          <div class="provider-grid">
+            <div class="provider-item">
+              <img src="/images/logos/openai.png" alt="OpenAI" onerror="this.style.display='none'">
+              <span>OpenAI</span>
+            </div>
+            <div class="provider-item">
+              <img src="/images/logos/google.png" alt="Google" onerror="this.style.display='none'">
+              <span>Google</span>
+            </div>
+            <div class="provider-item">
+              <img src="/images/logos/meta.png" alt="Meta" onerror="this.style.display='none'">
+              <span>Meta</span>
+            </div>
+            <div class="provider-item">
+              <img src="/images/logos/baidu.png" alt="百度" onerror="this.style.display='none'">
+              <span>百度</span>
+            </div>
+            <div class="provider-item">
+              <img src="/images/logos/alibaba.png" alt="阿里" onerror="this.style.display='none'">
+              <span>阿里</span>
+            </div>
+            <div class="provider-item">
+              <img src="/images/logos/tencent.png" alt="腾讯" onerror="this.style.display='none'">
+              <span>腾讯</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features-section">
+    <div class="container">
+      <div class="section-title">
+        <h2>为什么选择 AIII Cloud？</h2>
+        <p>一站式解决您的所有 AI API 需求</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="bi bi-currency-dollar"></i>
+            </div>
+            <h3>更低价格</h3>
+            <p>通过智能路由选择最优供应商，自动选择最便宜的可用模型，帮您节省高达70%的成本。</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="bi bi-shield-check"></i>
+            </div>
+            <h3>更高可用性</h3>
+            <p>分布式基础设施，99.99%可用性。当一个供应商故障时自动切换到其他供应商，确保服务永不断线。</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="bi bi-lightning-charge"></i>
+            </div>
+            <h3>极致性能</h3>
+            <p>边缘部署，全球节点覆盖。智能选择最近的服务节点，最小化延迟，体验丝般顺滑。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="code-section">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <h2 class="mb-4">一个 API，无限可能</h2>
+          <p class="text-light mb-4" style="opacity: 0.7;">兼容 OpenAI SDK，只需修改 base_url 即可切换到任意模型。零代码迁移，即刻体验。</p>
+          <div class="code-block">
+            <span class="keyword">import</span> aixcloud<br><br>
+            aixcloud.api_key = <span class="string">"sk-aix-..."</span><br>
+            aixcloud.base_url = <span class="string">"https://api.aix.cloud/v1"</span><br><br>
+            response = aixcloud.chat.completions.<span class="function">create</span>(
+            &nbsp;&nbsp;&nbsp;&nbsp;model=<span class="string">"AIII-Tech"</span>,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;messages=[{<span class="keyword">role</span>: <span class="string">"user"</span>, <span class="keyword">content</span>: <span class="string">"你好!"</span>}]<br>
+            )
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="quick-start-card">
+            <h3>快速开始</h3>
+            <ol>
+              <li>注册账号并获取 API Key</li>
+              <li>充值积分（支持支付宝/银行卡）</li>
+              <li>开始调用 API</li>
+              <li>实时监控用量与费用</li>
+            </ol>
+            <a href="/login" class="btn btn-primary w-100">立即开始</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container">
+      <h2>准备好开始了吗？</h2>
+      <p>立即注册，获得免费积分，开始使用全球最优秀的大模型。</p>
+      <a href="/login" class="btn btn-primary btn-lg">免费注册</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="row g-5">
+        <div class="col-lg-4">
+          <h5>AIII Cloud</h5>
+          <p>统一大模型 API 平台，让 AI 开发更简单。连接全球顶尖 AI 能力，助力您的业务创新。</p>
+        </div>
+        <div class="col-lg-2">
+          <h6>产品</h6>
+          <a href="/models">模型</a>
+          <a href="/chat">聊天</a>
+          <a href="/rankings">排行</a>
+          <a href="/pricing">价格</a>
+        </div>
+        <div class="col-lg-2">
+          <h6>开发者</h6>
+          <a href="/docs">文档</a>
+          <a href="/docs/quickstart">快速开始</a>
+          <a href="/docs/api">API 参考</a>
+        </div>
+        <div class="col-lg-2">
+          <h6>AIII平台</h6>
+          <a href="/about">关于我们</a>
+          <a href="/contact">联系我们</a>
+          <a href="/privacy">隐私政策</a>
+          <a href="/terms">服务条款</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        © 2026 AIII Cloud. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    window.addEventListener('scroll', function() {
+      const navbar = document.getElementById('navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+  </script>
+</body>
+</html>

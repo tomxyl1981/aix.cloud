@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIII Cloud 管理后台</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.min.css">
+  <style>
+    :root { --primary: #2563eb; }
+    body { background: #f8fafc; }
+    .sidebar { min-height: 100vh; background: #1e293b; }
+    .sidebar .nav-link { color: #94a3b8; border-radius: 8px; margin: 2px 8px; }
+    .sidebar .nav-link:hover, .sidebar .nav-link.active { background: #334155; color: #fff; }
+    .stat-card { border: none; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .table-card { border: none; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .badge-success { background: #dcfce7; color: #166534; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-danger { background: #fee2e2; color: #991b1b; }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <nav class="col-md-2 d-none d-md-block sidebar py-3">
+        <div class="text-center mb-4">
+          <h5 class="text-white">AIII Cloud</h5>
+          <small class="text-muted">管理后台</small>
+        </div>
+        <ul class="nav flex-column">
+          <li class="nav-item"><a class="nav-link" href="#" data-page="dashboard"><i class="bi bi-speedometer2 me-2"></i>仪表盘</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-page="users"><i class="bi bi-people me-2"></i>用户管理</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-page="models"><i class="bi bi-robot me-2"></i>模型管理</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-page="providers"><i class="bi bi-cloud me-2"></i>供应商</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-page="usage"><i class="bi bi-graph-up me-2"></i>用量统计</a></li>
+        </ul>
+      </nav>
+      <main class="col-md-10 ms-sm-auto px-4 py-4">
+        <div id="content"></div>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const API_BASE = '';
+    let currentUser = null;
+
+    async function api(endpoint, options = {}) {
+      let token = localStorage.getItem('admin_token') || '';
+      if (token.startsWith('AIII-Cloud ')) {
+        token = token.substring(11);
+      }
+      const res = await fetch(`${API_BASE}${endpoint}`, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `AIII-Cloud ${token}`,
+          ...options.headers
+        }
+      });
+      if (res.status === 401) {
+        showLogin();
+        throw new Error('Unauthorized');
+      }
+      return res.json();
+    }
+
+    function showLogin() {
+      document.getElementById('content').innerHTML = `
+        <div class="row justify-content-center mt-5">
+          <div class="col-md-4">
+            <div class="card table-card p-4">
+              <h4 class="text-center mb-4">管理员登录</h4>
+              <form onsubmit="handleLogin(event)">
+                <div class="mb-3">
+                  <label class="form-label">API Key</label>
+                  <input type="password" class="form-control" id="apiKey" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">登录</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const apiKey = document.getElementById('apiKey').value;
+      localStorage.setItem('admin_token', apiKey);
+      try {
+        await api('/user/me');
+        loadPage('dashboard');
+      } catch (err) {
+        alert('Invalid API Key');
+      }
+    }
+
+    async function loadPage(page) {
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+      switch(page) {
+        case 'dashboard': await renderDashboard(); break;
+        case 'users': await renderUsers(); break;
+        case 'models': await renderModels(); break;
+        case 'providers': await renderProviders(); break;
+        case 'usage': await renderUsage(); break;
+      }
+    }
+
+    async function renderDashboard() {
+      const stats = await api('/admin/stats');
+      document.getElementById('content').innerHTML = `
+        <h4 class="mb-4">仪表盘</h4>
+        <div class="row g-4 mb-4">
+          <div class="col-md-3">
+            <div class="card stat-card p-3">
+              <div class="text-muted small">总用户数</div>
+              <h3>${stats.total_users}</h3>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card stat-card p-3">
+              <div class="text-muted small">API Keys</div>
+              <h3>${stats.total_keys}</h3>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card stat-card p-3">
+              <div class="text-muted small">总请求数 (30天)</div>
+              <h3>${stats.total_requests.toLocaleString()}</h3>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card stat-card p-3">
+              <div class="text-muted small">总消耗 (30天)</div>
+              <h3>$${stats.total_cost.toFixed(4)}</h3>
+            </div>
+          </div>
+        </div>
+        <div class="card table-card p-3">
+          <h5>供应商统计</h5>
+          <table class="table table-hover">
+            <thead><tr><th>供应商</th><th>请求数</th><th>消耗</th><th>平均延迟</th></tr></thead>
+            <tbody>
+              ${stats.provider_stats.map(p => `
+                <tr><td>${p.provider}</td><td>${p.request_count}</td><td>$${parseFloat(p.total_cost || 0).toFixed(4)}</td><td>${Math.round(p.avg_latency || 0)}ms</td></tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    async function renderUsers() {
+      const data = await api('/admin/users');
+      document.getElementById('content').innerHTML = `
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h4>用户管理</h4>
+        </div>
+        <div class="card table-card">
+          <table class="table table-hover mb-0">
+            <thead><tr><th>ID</th><th>邮箱</th><th>名称</th><th>余额</th><th>总消耗</th><th>Keys</th><th>操作</th></tr></thead>
+            <tbody>
+              ${data.users.map(u => `
+                <tr>
+                  <td>${u.id}</td>
+                  <td>${u.email}</td><td>${u.name || '-'}</td>
+                  <td>$${parseFloat(u.balance || 0).toFixed(2)}</td>
+                  <td>$${parseFloat(u.total_spent || 0).toFixed(2)}</td>
+                  <td>${u.key_count}</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary" onclick="showUserDetail(${u.id})">详情</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    async function showUserDetail(id) {
+      const data = await api(`/admin/users/${id}`);
+      document.getElementById('content').innerHTML = `
+        <button class="btn btn-link mb-3" onclick="renderUsers()">← 返回</button>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="card table-card p-3">
+              <h5>用户信息</h5>
+              <p><strong>邮箱:</strong> ${data.user.email}</p>
+              <p><strong>名称:</strong> ${data.user.name || '-'}</p>
+              <p><strong>余额:</strong> $${parseFloat(data.user.balance || 0).toFixed(2)}</p>
+              <p><strong>总消耗:</strong> $${parseFloat(data.user.total_spent || 0).toFixed(2)}</p>
+              <hr>
+              <div class="input-group mb-2">
+                <input type="number" class="form-control" id="amount" placeholder="金额">
+                <button class="btn btn-success" onclick="updateBalance(${id}, 'add')">充值</button>
+                <button class="btn btn-warning" onclick="updateBalance(${id}, 'deduct')">扣费</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="card table-card p-3 mb-3">
+              <h5>API Keys</h5>
+              <table class="table table-sm">
+                <thead><tr><th>名称</th><th>状态</th><th>创建时间</th></tr></thead>
+                <tbody>
+                  ${data.keys.map(k => `
+                    <tr><td>${k.name}</td><td><span class="badge ${k.revoked ? 'badge-danger' : 'badge-success'}">${k.revoked ? '已吊销' : '正常'}</span></td><td>${new Date(k.created_at).toLocaleString()}</td></tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function updateBalance(userId, action) {
+      const amount = parseFloat(document.getElementById('amount').value);
+      if (!amount || amount <= 0) return alert('请输入有效金额');
+      await api(`/admin/users/${userId}/balance`, {
+        method: 'POST',
+        body: JSON.stringify({ amount, action })
+      });
+      showUserDetail(userId);
+    }
+
+    async function renderModels() {
+      const data = await api('/admin/models');
+      document.getElementById('content').innerHTML = `
+        <h4 class="mb-4">模型管理</h4>
+        <div class="card table-card">
+          <table class="table table-hover mb-0">
+            <thead><tr><th>模型名</th><th>显示名</th><th>供应商</th><th>输入价格</th><th>输出价格</th><th>上下文</th><th>状态</th></tr></thead>
+            <tbody>
+              ${data.models.map(m => `
+                <tr>
+                  <td><code>${m.model_name}</code></td>
+                  <td>${m.display_name}</td>
+                  <td>${m.provider}</td>
+                  <td>$${m.input_price_per_1k_tokens}/1K</td>
+                  <td>$${m.output_price_per_1k_tokens}/1K</td>
+                  <td>${m.context_length?.toLocaleString()}</td>
+                  <td>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" ${m.enabled ? 'checked' : ''} 
+                        onchange="toggleModel(${m.id}, this.checked)">
+                    </div>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    async function toggleModel(id, enabled) {
+      await api(`/admin/models/${id}`, { method: 'PATCH', body: JSON.stringify({ enabled }) });
+    }
+
+    async function renderProviders() {
+      const data = await api('/admin/providers');
+      document.getElementById('content').innerHTML = `
+        <h4 class="mb-4">供应商管理</h4>
+        <div class="card table-card">
+          <table class="table table-hover mb-0">
+            <thead><tr><th>名称</th><th>显示名</th><th>Base URL</th><th>成功率</th><th>平均延迟</th><th>状态</th></tr></thead>
+            <tbody>
+              ${data.providers.map(p => `
+                <tr>
+                  <td><code>${p.name}</code></td>
+                  <td>${p.display_name}</td>
+                  <td><small class="text-muted">${p.base_url}</small></td>
+                  <td><span class="badge ${(p.success_rate || 100) >= 90 ? 'badge-success' : 'badge-warning'}">${(p.success_rate || 100).toFixed(1)}%</span></td>
+                  <td>${p.avg_latency_ms || 0}ms</td>
+                  <td>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" ${p.enabled ? 'checked' : ''} 
+                        onchange="toggleProvider(${p.id}, this.checked)">
+                    </div>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    async function toggleProvider(id, enabled) {
+      await api(`/admin/providers/${id}`, { method: 'PATCH', body: JSON.stringify({ enabled }) });
+    }
+
+    async function renderUsage() {
+      const data = await api('/admin/usage?limit=50');
+      document.getElementById('content').innerHTML = `
+        <h4 class="mb-4">用量统计</h4>
+        <div class="card table-card">
+          <table class="table table-sm mb-0">
+            <thead><tr><th>时间</th><th>用户</th><th>模型</th><th>供应商</th><th>输入</th><th>输出</th><th>消耗</th><th>延迟</th></tr></thead>
+            <tbody>
+              ${data.usage.map(u => `
+                <tr>
+                  <td><small>${new Date(u.created_at).toLocaleString()}</small></td>
+                  <td><small>${u.email}</small></td>
+                  <td><code>${u.model}</code></td>
+                  <td>${u.provider}</td>
+                  <td>${u.tokens_in}</td>
+                  <td>${u.tokens_out}</td>
+                  <td>$${parseFloat(u.cost).toFixed(4)}</td>
+                  <td>${u.latency_ms}ms</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    document.addEventListener('click', (e) => {
+      if (e.target.dataset.page) {
+        loadPage(e.target.dataset.page);
+      }
+    });
+
+    showLogin();
+  </script>
+</body>
+</html>

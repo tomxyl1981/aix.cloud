@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 聊天 - AIII Cloud</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.min.css">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/core.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif; background: #fff; }
+    .chat-container { height: 100vh; display: flex; flex-direction: column; }
+    .chat-header { height: 56px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e5e5e5; background: #fff; flex-shrink: 0; }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header-left a { color: #333; text-decoration: none; font-size: 16px; font-weight: 600; }
+    .header-left select { padding: 6px 10px; border: 1px solid #e5e5e5; border-radius: 6px; font-size: 14px; outline: none; }
+    .header-right { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+    .header-right a { color: #666; text-decoration: none; padding: 6px 12px; border: 1px solid #e5e5e5; border-radius: 6px; }
+    .chat-main { flex: 1; display: flex; overflow: hidden; }
+    .chat-sidebar { width: 240px; border-right: 1px solid #e5e5e5; background: #f5f5f5; flex-shrink: 0; display: flex; flex-direction: column; }
+    .chat-sidebar button { display: block; width: calc(100% - 16px); margin: 8px; padding: 10px; border: none; background: #3891ff; color: #fff; border-radius: 8px; cursor: pointer; font-size: 14px; }
+    .chat-sidebar button:hover { background: #2877e9; }
+    .chat-history { padding: 8px; flex: 1; overflow-y: auto; }
+    .user-panel { padding: 12px; border-top: 1px solid #e5e5e5; font-size: 13px; color: #666; display: flex; align-items: center; justify-content: space-between; }
+    .chat-content { flex: 1; display: flex; background: #fff; min-width: 0; }
+    .chat-messages-wrap { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 20px; }
+    .chat-messages .message { max-width: 800px; margin: 0 auto 20px; }
+    .chat-messages .message-content { padding: 12px 16px; border-radius: 12px; background: #f0f9f0; white-space: pre-wrap; word-break: break-word; line-height: 1.6; font-size: 15px; }
+    .chat-messages .message-user { text-align: right; }
+    .chat-messages .message-user .message-content { background: #3891ff; color: #fff; }
+    .chat-input-wrap { padding: 16px 20px 24px; background: #fff; flex-shrink: 0; }
+    .chat-input-box { max-width: 800px; margin: 0 auto; border: 1px solid #e5e5e5; border-radius: 12px; display: flex; align-items: flex-end; padding: 12px 16px; }
+    .chat-input-box:focus-within { border-color: #3891ff; box-shadow: 0 0 0 2px rgba(56,145,255,0.1); }
+    .chat-input-box textarea { flex: 1; border: none; outline: none; resize: none; font-size: 15px; line-height: 1.5; max-height: 200px; font-family: inherit; }
+    .chat-input-box button { width: 32px; height: 32px; border: none; background: #3891ff; color: #fff; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-left: 12px; flex-shrink: 0; }
+    .chat-input-box button:hover { background: #2877e9; }
+    .chat-input-box button:disabled { background: #ccc; cursor: not-allowed; }
+    .empty-state { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #999; }
+    .empty-state i { font-size: 48px; margin-bottom: 16px; }
+    .message-content img { max-width: 100%; border-radius: 8px; margin: 8px 0; }
+    .message-content pre { background: #f6f8fa; border-radius: 8px; padding: 12px; overflow-x: auto; margin: 8px 0; }
+    .message-content code { background: #f6f8fa; padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: monospace; }
+    .message-content p { margin: 0 0 8px 0; }
+    .chat-stats-panel { width: 180px; background: #1a1a2e; padding: 16px; display: flex; flex-direction: column; border-left: 1px solid #e5e5e5; flex-shrink: 0; }
+    .stats-title { color: #fff; font-size: 13px; font-weight: 600; margin-bottom: 16px; text-align: center; }
+    .stats-content { display: flex; flex-direction: column; gap: 16px; flex: 1; }
+    .stats-number { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .stats-label { color: #888; font-size: 12px; }
+    .stats-value { font-size: 22px; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">
+      <div class="header-left">
+        <a href="/">AIII Cloud</a>
+        <select id="modelSelect">
+          <option value="AIII-Fast" selected>AIII-Fast</option>
+          <option value="AIII-Tech">AIII-Tech</option>
+        </select>
+      </div>
+      <div class="header-right">
+        <a href="/dashboard">控制台</a>
+      </div>
+    </div>
+    
+    <div class="chat-main">
+      <div class="chat-sidebar">
+        <button onclick="newChat()">新建对话</button>
+        <div class="chat-history" id="chatHistory"></div>
+        <div class="user-panel">
+          <span><i class="bi bi-person"></i> <span id="username">加载中...</span></span>
+          <a href="javascript:;" onclick="logout()" style="color: #999;"><i class="bi bi-box-arrow-right"></i></a>
+        </div>
+      </div>
+      
+      <div class="chat-content">
+        <div class="chat-messages-wrap">
+          <div class="chat-messages" id="chatMessages">
+            <div class="empty-state">
+              <i>💬</i>
+              <p>开始新对话</p>
+            </div>
+          </div>
+          
+          <div class="chat-input-wrap">
+            <div class="chat-input-box">
+              <textarea id="messageInput" rows="1" placeholder="发送消息..." autofocus></textarea>
+              <button id="sendBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="chat-stats-panel">
+          <div class="stats-title">Token 统计</div>
+          <div class="stats-content">
+            <div class="stats-number">
+              <span class="stats-value" id="usedTokens" style="color:#ef4444">0</span>
+              <span class="stats-label">已消耗</span>
+            </div>
+            <div class="stats-number">
+              <span class="stats-value" id="remainingTokens" style="color:#10b981">1M</span>
+              <span class="stats-label">剩余</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var md = markdownit({ html: false, linkify: true, typographer: true });
+    
+    (function checkAuth() {
+      var expire = localStorage.getItem('login_expire');
+      if (!expire || Date.now() > parseInt(expire)) {
+        localStorage.removeItem('user_email');
+        localStorage.removeItem('login_expire');
+        window.location.href = '/login';
+        return false;
+      }
+      return true;
+    })();
+    
+    var messages = [];
+    var currentModel = 'AIII-Fast';
+    var isStreaming = false;
+    var totalTokens = 0;
+    var totalLimit = 1000000;
+    var sessionTokens = 0;
+    var apiKey = null;
+    var isStreaming = false;
+    var sessionToken = localStorage.getItem('session_token');
+    
+    async function loadApiKey() {
+      try {
+        var res = await fetch('/user/api-key', { 
+          headers: { 'x-session-token': sessionToken }
+        });
+        if (res.ok) {
+          var data = await res.json();
+          apiKey = data.api_key;
+        }
+      } catch (e) { console.error(e); }
+    }
+    
+    function estimateTokens(text) {
+      return Math.ceil((text || '').length / 4);
+    }
+    
+    function updateTokenDisplay() {
+      var used = sessionTokens;
+      var remaining = Math.max(0, totalLimit - used);
+      
+      document.getElementById('usedTokens').textContent = used.toLocaleString();
+      document.getElementById('usedTokens').style.color = used > 0 ? '#ef4444' : '#10b981';
+      document.getElementById('remainingTokens').textContent = remaining >= 1000000 ? '1M' : remaining.toLocaleString();
+    }
+    
+    function loadUsageStats() {
+      if (!apiKey) return;
+      fetch('/user/usage/summary', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-session-token': sessionToken
+        },
+        body: JSON.stringify({})
+      }).then(function(res) { return res.json(); })
+      .then(function(data) {
+        var summary = data.summary || [];
+        var totalUsed = 0;
+        summary.forEach(function(item) {
+          totalUsed += (parseInt(item.tokens_total) || 0);
+        });
+        sessionTokens = totalUsed;
+        updateTokenDisplay();
+      }).catch(function() {});
+    }
+    
+    function checkAuth() {
+      fetch('/user/me', {
+        headers: { 'x-session-token': sessionToken }
+      }).then(function(res) {
+        if (!res.ok) {
+          window.location.href = '/login';
+        } else {
+          return res.json();
+        }
+      }).then(function(data) {
+        if (data && data.user && data.user.email) {
+          document.getElementById('username').textContent = data.user.email.split('@')[0];
+        }
+        loadUsageStats();
+      }).catch(function() {
+        window.location.href = '/login';
+      });
+    }
+    
+    function logout() {
+      localStorage.removeItem('user_email');
+      localStorage.removeItem('login_expire');
+      window.location.href = '/login';
+    }
+    
+    function newChat() {
+      messages = [];
+      sessionTokens = 0;
+      updateTokenDisplay();
+      document.getElementById('chatMessages').innerHTML = '<div class="empty-state"><i>💬</i><p>开始新对话</p></div>';
+    }
+    
+    function renderMessage(role, content) {
+      var div = document.createElement('div');
+      div.className = 'message message-' + role;
+      
+      var contentDiv = document.createElement('div');
+      contentDiv.className = 'message-content';
+      
+      if (role === 'assistant') {
+        contentDiv.innerHTML = md.render(content);
+      } else {
+        contentDiv.textContent = content;
+      }
+      
+      div.appendChild(contentDiv);
+      document.getElementById('chatMessages').appendChild(div);
+      document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+      
+      return div;
+    }
+    
+    function sendMessage() {
+      var input = document.getElementById('messageInput');
+      var content = input.value.trim();
+      if (!content) return;
+      
+      messages.push({ role: 'user', content: content });
+      renderMessage('user', content);
+      sessionTokens += estimateTokens(content);
+      updateTokenDisplay();
+      input.value = '';
+      
+      var msgDiv = renderMessage('assistant', '<span style="color:#999;">思考中...</span>');
+      
+      fetch('/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': apiKey },
+        body: JSON.stringify({ model: currentModel, messages: messages, stream: true })
+      }).then(function(res) {
+        if (!res.ok) {
+          msgDiv.querySelector('.message-content').innerHTML = '<span style="color:red;">请求失败，请重试</span>';
+          messages.pop();
+          return;
+        }
+        
+        var reader = res.body.getReader();
+        var decoder = new TextDecoder();
+        var fullContent = '';
+        
+        function processStream() {
+          reader.read().then(function(result) {
+            if (result.done) {
+              if (fullContent) {
+                messages.push({ role: 'assistant', content: fullContent });
+                msgDiv.querySelector('.message-content').innerHTML = md.render(fullContent);
+              } else {
+                msgDiv.querySelector('.message-content').innerHTML = '<span style="color:#999;">无响应</span>';
+                messages.pop();
+              }
+              // Refresh stats after streaming
+              setTimeout(loadUsageStats, 1000);
+              return;
+            }
+            
+            var text = decoder.decode(result.value, { stream: true });
+            var lines = text.split('\n');
+            
+            lines.forEach(function(line) {
+              if (line.startsWith('data: ')) {
+                var data = line.slice(6);
+                if (data === '[DONE]') return;
+                try {
+                  var json = JSON.parse(data);
+                  var delta = json.choices?.[0]?.delta?.content || '';
+                  if (delta) {
+                    fullContent += delta;
+                    sessionTokens += estimateTokens(delta);
+                    updateTokenDisplay();
+                    msgDiv.querySelector('.message-content').innerHTML = md.render(fullContent);
+                    document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+                  }
+                } catch (e) {}
+              }
+            });
+            
+            processStream();
+          }).catch(function(err) {
+            msgDiv.querySelector('.message-content').innerHTML = '<span style="color:red;">连接错误: ' + err.message + '</span>';
+            messages.pop();
+          });
+        }
+        
+        processStream();
+      }).catch(function(err) {
+        msgDiv.querySelector('.message-content').innerHTML = '<span style="color:red;">错误: ' + err.message + '</span>';
+        messages.pop();
+      });
+    }
+    
+    document.getElementById('messageInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+    
+    document.getElementById('sendBtn').addEventListener('click', sendMessage);
+    
+    document.getElementById('modelSelect').addEventListener('change', function() {
+      currentModel = this.value;
+      console.log('Model changed to:', currentModel);
+    });
+    
+    loadApiKey().then(function() { 
+      checkAuth(); 
+      loadUsageStats();
+    });
+  </script>
+</body>
+</html>

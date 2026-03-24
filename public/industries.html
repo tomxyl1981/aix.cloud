@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>千行百业 - AIII Cloud</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+      --dark-bg: #030712;
+      --glass-bg: rgba(255, 255, 255, 0.06);
+      --glass-border: rgba(255, 255, 255, 0.12);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      background: var(--dark-bg);
+      color: #fff;
+      min-height: 100vh;
+    }
+    .navbar { 
+      background: rgba(3, 7, 18, 0.9) !important;
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 16px 0;
+    }
+    .nav-brand { 
+      font-size: 24px; 
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-light), var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 24px; list-style: none; }
+    .nav-links a { 
+      text-decoration: none; 
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+    .nav-links a:hover { 
+      color: #fff;
+      background: var(--glass-bg);
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 100px 24px 60px; }
+    .page-title { 
+      font-size: 3rem; 
+      font-weight: 700; 
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .page-desc { 
+      color: rgba(255, 255, 255, 0.6); 
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 48px; 
+    }
+    .icon-grid { 
+      display: grid; 
+      grid-template-columns: repeat(6, 1fr); 
+      gap: 20px; 
+    }
+    .icon-card { 
+      background: linear-gradient(145deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    .icon-card:hover { 
+      transform: translateY(-6px);
+      box-shadow: 0 12px 32px rgba(79, 70, 229, 0.2);
+      border-color: var(--primary);
+    }
+    .icon-card img { 
+      width: 56px; 
+      height: 56px; 
+      object-fit: contain;
+    }
+    .icon-name { 
+      font-size: 12px; 
+      color: rgba(255, 255, 255, 0.8);
+      text-align: center;
+      word-break: break-all;
+      text-transform: capitalize;
+    }
+    footer {
+      background: rgba(0, 0, 0, 0.5);
+      border-top: 1px solid var(--glass-border);
+      padding: 40px 0;
+      text-align: center;
+    }
+    footer a {
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      margin: 0 12px;
+      transition: color 0.3s;
+    }
+    footer a:hover { color: var(--primary-light); }
+    .footer-bottom {
+      margin-top: 20px;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 14px;
+    }
+    @media (max-width: 992px) {
+      .icon-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (max-width: 576px) {
+      .icon-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;padding:0 24px;">
+      <a href="/" class="nav-brand">AIII Cloud</a>
+      <ul class="nav-links">
+        <li><a href="/">首页</a></li>
+        <li><a href="/docs">文档</a></li>
+        <li><a href="/pricing">价格</a></li>
+        <li><a href="/industries">千行百业</a></li>
+        <li><a href="/dashboard">控制台</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1 class="page-title">千行百业</h1>
+    <p class="page-desc">探索各行业 AI 应用，智能路由自动选择最适合的模型</p>
+    
+    <div class="icon-grid" id="grid"></div>
+  </div>
+
+  <footer>
+    <a href="/">首页</a>
+    <a href="/docs">文档</a>
+    <a href="/pricing">价格</a>
+    <a href="/about">关于</a>
+    <div class="footer-bottom">© 2026 AIII Cloud. All rights reserved.</div>
+  </footer>
+
+  <script>
+    const iconUrls = {
+      'adobe': 'https://www.adobe.com', 'ai2': 'https://www.ai2.com', 'ai21': 'https://www.ai21.com',
+      'ai302': 'https://ai302.com', 'ai360': 'https://ai.360.cn', 'akashchat': 'https://akash.ai',
+      'alibaba': 'https://www.alibabacloud.com', 'alibabacloud': 'https://www.alibabacloud.com',
+      'antgroup': 'https://www.antgroup.com', 'anyscale': 'https://anyscale.com',
+      'assemblyai': 'https://www.assemblyai.com', 'aws': 'https://aws.amazon.com',
+      'aya': 'https://aya.ai', 'azure': 'https://azure.microsoft.com', 'baichuan': 'https://www.baichuan-ai.com',
+      'baidu': 'https://ai.baidu.com', 'bedrock': 'https://aws.amazon.com/bedrock',
+      'bytedance': 'https://www.bytedance.com', 'cerebras': 'https://cerebras.ai',
+      'claude': 'https://www.anthropic.com/claude', 'cohere': 'https://cohere.com',
+      'copilot': 'https://copilot.microsoft.com', 'deepinfra': 'https://deepinfra.com',
+      'deepseek': 'https://www.deepseek.com', 'dify': 'https://dify.ai',
+      'fal': 'https://fal.ai', 'fireworks': 'https://fireworks.ai', 'gemini': 'https://gemini.google.com',
+      'gemma': 'https://ai.google.dev/models/gemma', 'google': 'https://google.ai',
+      'huggingface': 'https://huggingface.co', 'hunyuan': 'https://cloud.tencent.com/product/hunyuan',
+      'hyperbolic': 'https://hyperbolic.xyz', 'jina': 'https://jina.ai', 'kimi': 'https://kimi.moonshot.cn',
+      'kling': 'https://kling.kuaishou.com', 'langchain': 'https://js.langchain.com',
+      'langfuse': 'https://langfuse.com', 'leptonai': 'https://lepton.ai',
+      'llamaindex': 'https://www.llamaindex.ai', 'llava': 'https://llava-vl.github.io',
+      'lobehub': 'https://lobehub.com', 'luma': 'https://lumalabs.ai', 'meta': 'https://meta.ai',
+      'minimax': 'https://www.minimax.io', 'mistral': 'https://mistral.ai',
+      'modelscope': 'https://modelscope.cn', 'monica': 'https://monica.im', 'n8n': 'https://n8n.io',
+      'nvidia': 'https://www.nvidia.com', 'openchat': 'https://openchat.chat',
+      'perplexity': 'https://www.perplexity.ai', 'qwen': 'https://qwenlm.github.io',
+      'replit': 'https://replit.com', 'sambanova': 'https://sambanova.ai',
+      'siliconcloud': 'https://siliconflow.cn', 'snowflake': 'https://snowflake.com',
+      'spark': 'https://spark.ai', 'stability': 'https://stability.ai',
+      'tencent': 'https://cloud.tencent.com', 'together': 'https://together.ai',
+      'vllm': 'https://vllm.ai', 'volcengine': 'https://www.volcengine.com',
+      'voyage': 'https://voyageai.com', 'yi': 'https://01.ai', 'zhipu': 'https://www.zhipuai.cn'
+    };
+
+    const colorIcons = ['adobe', 'ai2', 'ai21', 'ai302', 'ai360', 'akashchat', 'alibaba', 'alibabacloud', 'antgroup', 'anyscale', 'assemblyai', 'aws', 'aya', 'azure', 'baichuan', 'baidu', 'bedrock', 'bytedance', 'cerebras', 'claude', 'cohere', 'copilot', 'deepinfra', 'deepseek', 'dify', 'fal', 'fireworks', 'gemini', 'gemma', 'google', 'huggingface', 'hunyuan', 'hyperbolic', 'kimi', 'kling', 'langchain', 'langfuse', 'leptonai', 'llamaindex', 'llava', 'lobehub', 'luma', 'meta', 'minimax', 'mistral', 'modelscope', 'monica', 'n8n', 'nvidia', 'openchat', 'perplexity', 'qwen', 'replit', 'sambanova', 'siliconcloud', 'snowflake', 'spark', 'stability', 'tencent', 'together', 'vllm', 'volcengine', 'voyage', 'yi', 'zhipu'];
+    const colorSet = new Set(colorIcons);
+
+    const icons = [
+      'adobe', 'ai2', 'ai21', 'ai302', 'ai360', 'akashchat', 'alibaba', 'alibabacloud', 'antgroup', 'anyscale',
+      'assemblyai', 'aws', 'aya', 'azure', 'baichuan', 'baidu', 'bedrock', 'bytedance', 'cerebras', 'claude',
+      'cohere', 'copilot', 'deepinfra', 'deepseek', 'dify', 'fal', 'fireworks', 'gemini', 'gemma', 'google',
+      'huggingface', 'hunyuan', 'hyperbolic', 'jina', 'kimi', 'kling', 'langchain', 'langfuse', 'leptonai',
+      'llamaindex', 'llava', 'lobehub', 'luma', 'meta', 'minimax', 'mistral', 'modelscope', 'monica', 'n8n',
+      'nvidia', 'openchat', 'perplexity', 'qwen', 'replit', 'sambanova', 'siliconcloud', 'snowflake', 'spark',
+      'stability', 'tencent', 'together', 'vllm', 'volcengine', 'voyage', 'yi', 'zhipu'
+    ];
+
+    const grid = document.getElementById('grid');
+    
+    icons.forEach(name => {
+      const card = document.createElement('a');
+      card.className = 'icon-card';
+      const url = iconUrls[name];
+      if (url) card.href = url;
+      card.target = '_blank';
+      card.rel = 'noopener noreferrer';
+      const src = colorSet.has(name) ? `/icons/${name}-color.svg` : `/icons/${name}.svg`;
+      card.innerHTML = `
+        <img src="${src}" alt="${name}" onerror="this.style.display='none'">
+        <span class="icon-name">${name.replace(/-/g, ' ')}</span>
+      `;
+      grid.appendChild(card);
+    });
+  </script>
+</body>
+</html>

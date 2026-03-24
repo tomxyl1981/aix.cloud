@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>控制台 - AIII Cloud</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.min.css">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
+      --primary-light: #6366f1;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      min-height: 100vh;
+    }
+    .navbar {
+      background: #fff !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      padding: 16px 0;
+    }
+    .navbar-brand {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary) !important;
+    }
+    .nav-link {
+      color: #666 !important;
+      font-weight: 500;
+      padding: 8px 16px !important;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .nav-link:hover { color: var(--primary) !important; background: #f5f5f5; }
+    .btn-primary {
+      background: var(--primary);
+      border: none;
+      padding: 10px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-outline-primary { border-color: var(--primary); color: var(--primary); }
+    .btn-outline-primary:hover { background: var(--primary); color: #fff; }
+    .btn-danger { background: #ef4444; border: none; padding: 6px 12px; border-radius: 6px; color: #fff; }
+    .btn-danger:hover { background: #dc2626; }
+    .container { max-width: 1100px; padding: 100px 24px 60px; }
+    .page-header { margin-bottom: 40px; }
+    .page-header h2 { font-size: 2rem; font-weight: 700; color: #1f2937; }
+    .stat-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      height: 100%;
+    }
+    .stat-card h6 { color: #6b7280; font-size: 0.875rem; margin-bottom: 8px; }
+    .stat-card h2 { font-size: 2rem; font-weight: 700; color: #1f2937; margin-bottom: 12px; }
+    .table-card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .table-card h5 { padding: 20px 24px; margin: 0; font-weight: 600; border-bottom: 1px solid #e5e7eb; }
+    .table-card th { background: #f9fafb; color: #6b7280; font-weight: 500; padding: 14px 20px; border: none; font-size: 13px; }
+    .table-card td { padding: 16px 20px; border-bottom: 1px solid #f3f4f6; color: #374151; }
+    .table-card tr:last-child td { border-bottom: none; }
+    .table-card tr:hover td { background: #f9fafb; }
+    .badge-balance { background: var(--primary); color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 13px; }
+    .key-value { font-family: monospace; background: #f3f4f6; padding: 6px 10px; border-radius: 6px; font-size: 13px; }
+    .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 12px; }
+    .status-active { background: #d1fae5; color: #059669; }
+    .status-revoked { background: #fee2e2; color: #dc2626; }
+    footer {
+      background: #fff;
+      border-top: 1px solid #e5e7eb;
+      padding: 40px 0;
+      text-align: center;
+      color: #9ca3af;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="/">AIII Cloud</a>
+      <div class="d-flex align-items-center gap-3">
+        <a href="/chat" class="btn btn-primary btn-sm">AI 聊天</a>
+        <span class="text-dark" id="userEmail"></span>
+        <span class="badge-balance" id="balanceBadge">余额: ¥0</span>
+        <button class="btn btn-outline-primary btn-sm" onclick="logout()">退出</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h2>控制台</h2>
+    </div>
+    
+    <div class="row g-4 mb-4">
+      <div class="col-md-4">
+        <div class="stat-card">
+          <h6>当前余额</h6>
+          <h2 id="balanceDisplay">¥0.00</h2>
+          <button class="btn btn-primary btn-sm" onclick="showRecharge()">充值</button>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card">
+          <h6>API Keys</h6>
+          <h2 id="keyCount">0</h2>
+          <button class="btn btn-outline-primary btn-sm" onclick="createApiKey()">创建新 Key</button>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card">
+          <h6>统计用量</h6>
+          <h2 id="usageDisplay">0 tokens</h2>
+          <small class="text-muted" id="usageAmount"></small>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-card mb-4">
+      <h5>API Keys</h5>
+      <table class="table" id="keysTable">
+        <thead>
+          <tr>
+            <th>名称</th>
+            <th>Key</th>
+            <th>创建时间</th>
+            <th>状态</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="table-card">
+      <h5>使用记录</h5>
+      <table class="table" id="usageTable">
+        <thead>
+          <tr>
+            <th>时间</th>
+            <th>模型</th>
+            <th>输入</th>
+            <th>输出</th>
+            <th>费用</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    © 2026 AIII Cloud. All rights reserved.
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    (function checkAuth() {
+      var sessionToken = localStorage.getItem('session_token');
+      var expire = localStorage.getItem('login_expire');
+      if (!sessionToken || !expire || Date.now() > parseInt(expire)) {
+        localStorage.removeItem('session_token');
+        localStorage.removeItem('user_email');
+        localStorage.removeItem('login_expire');
+        window.location.href = '/login';
+        return false;
+      }
+      return true;
+    })();
+    
+    let sessionToken = localStorage.getItem('session_token');
+    let userData = null;
+    let apiKey = null;
+    
+    async function loadApiKey() {
+      try {
+        const res = await fetch('/user/api-key', { 
+          headers: { 'x-session-token': sessionToken }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          apiKey = data.api_key;
+        }
+      } catch (e) { console.error(e); }
+    }
+    
+    async function loadUserData() {
+      try {
+        const res = await fetch('/user/me', { 
+          headers: { 'x-session-token': sessionToken }
+        });
+        if (!res.ok) { logout(); return; }
+        userData = await res.json();
+        document.getElementById('userEmail').textContent = userData.user?.email || userData.email;
+        const bal = Number(userData.balance) || 0;
+        document.getElementById('balanceDisplay').textContent = '¥' + bal.toFixed(2);
+        document.getElementById('balanceBadge').textContent = '余额: ¥' + bal.toFixed(2);
+        loadApiKeys();
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadApiKeys() {
+      var userEmail = localStorage.getItem('user_email');
+      console.log('Loading keys for email:', userEmail);
+      
+      var res = await fetch('/user/keys', { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: userEmail })
+      });
+      console.log('Status:', res.status);
+      var data = await res.json();
+      console.log('Keys:', data);
+      const keys = data.keys || [];
+      
+      document.getElementById('keyCount').textContent = keys.length;
+      const tbody = document.querySelector('#keysTable tbody');
+      if (keys.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#999;">暂无API Key，请点击上方按钮创建</td></tr>';
+      } else {
+        tbody.innerHTML = keys.map(k => `
+          <tr>
+            <td>${k.name || 'Default'}</td>
+            <td><span class="key-value">${k.key_prefix}...</span> <i class="bi bi-clipboard" style="cursor:pointer;margin-left:8px" onclick="copyKey('${k.key}')"></i></td>
+            <td>${new Date(k.created_at).toLocaleDateString()}</td>
+            <td><span class="status-badge ${!k.revoked ? 'status-active' : 'status-revoked'}">${!k.revoked ? '活跃' : '已禁用'}</span></td>
+            <td>
+              ${!k.revoked ? `<button class="btn btn-danger btn-sm" onclick="revokeKey('${k.id}')">禁用</button>` : ''}
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    async function loadUsage() {
+      var res = await fetch('/user/usage/summary', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-session-token': sessionToken
+        },
+        body: JSON.stringify({})
+      });
+      var data = await res.json();
+      var summary = data.summary || [];
+      var totalTokens = 0;
+      var totalCost = 0;
+      
+      summary.forEach(function(item) {
+        totalTokens += (parseInt(item.total_tokens) || 0);
+        totalCost += (parseFloat(item.total_cost) || 0);
+      });
+      
+      document.getElementById('usageDisplay').textContent = totalTokens.toLocaleString() + ' tokens';
+      document.getElementById('usageAmount').textContent = '约 ¥' + totalCost.toFixed(2);
+      
+      loadUsageRecords();
+    }
+    
+    async function loadUsageRecords() {
+      var userEmail = localStorage.getItem('user_email');
+      var res = await fetch('/user/usage', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: userEmail, limit: 50 })
+      });
+      var data = await res.json();
+      var records = data.usage || [];
+      var tbody = document.querySelector('#usageTable tbody');
+      
+      if (records.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#999;">暂无使用记录</td></tr>';
+      } else {
+        tbody.innerHTML = records.map(function(r) {
+          return '<tr>' +
+            '<td>' + new Date(r.created_at).toLocaleString() + '</td>' +
+            '<td>' + (r.model || 'N/A') + '</td>' +
+            '<td>' + (r.tokens_in || 0) + '</td>' +
+            '<td>' + (r.tokens_out || 0) + '</td>' +
+            '<td>¥' + parseFloat(r.cost || 0).toFixed(4) + '</td>' +
+            '</tr>';
+        }).join('');
+      }
+    }
+
+    async function createApiKey() {
+      const name = prompt('请输入 Key 名称:');
+      if (!name) return;
+      const res = await fetch('/user/keys', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json', 
+          'x-session-token': sessionToken,
+          'Authorization': apiKey 
+        },
+        body: JSON.stringify({ name })
+      });
+      if (res.ok) { alert('Key 创建成功！'); loadApiKeys(); }
+      else alert('创建失败');
+    }
+
+    async function revokeKey(id) {
+      if (!confirm('确定要禁用这个 Key 吗？')) return;
+      await fetch('/user/keys/' + id, { 
+        method: 'DELETE', 
+        headers: { 
+          'x-session-token': sessionToken,
+          'Authorization': apiKey 
+        }
+      });
+      loadApiKeys();
+    }
+
+    function copyKey(key) {
+      navigator.clipboard.writeText(key);
+      alert('已复制到剪贴板');
+    }
+
+    function showRecharge() {
+      const amount = prompt('请输入充值金额:');
+      if (!amount) return;
+      alert('充值功能开发中...');
+    }
+
+    function logout() {
+      localStorage.removeItem('session_token');
+      localStorage.removeItem('user_email');
+      localStorage.removeItem('login_expire');
+      window.location.href = '/login';
+    }
+
+    loadApiKey().then(() => { 
+      loadUserData();
+      loadUsage();
+    });
+  </script>
+</body>
+</html>
