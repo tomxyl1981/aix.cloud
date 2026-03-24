@@ -45,6 +45,16 @@
     .price-output { color: #dc2626; }
     footer { background: var(--bg-primary); border-top: 1px solid var(--border-color); padding: 40px 0; text-align: center; }
     footer p { color: var(--text-secondary); font-size: 14px; margin: 0; }
+    @media (max-width: 768px) {
+      .navbar .container { flex-wrap: wrap; }
+      .navbar ul { flex-wrap: wrap; gap: 4px !important; justify-content: center; width: 100%; padding-top: 12px; }
+      .page-header h1 { font-size: 1.75rem; }
+      .page-header { padding: 120px 0 32px; }
+      .model-row { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .model-icon { width: 40px; height: 40px; font-size: 16px; }
+      .model-info { width: 100%; }
+      .model-price { width: 100%; text-align: left; display: flex; gap: 16px; }
+    }
   </style>
 </head>
 <body>

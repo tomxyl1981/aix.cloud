@@ -355,11 +355,28 @@
       .stats { gap: 32px; }
     }
 
+    @media (max-width: 992px) {
+      .hero h1 { font-size: 2.5rem; }
+      .stats { gap: 24px; }
+      .navbar .container { flex-wrap: wrap; }
+      .navbar-brand { margin-right: auto; }
+      .navbar-toggler { margin-left: auto; }
+    }
+
     @media (max-width: 768px) {
-      .hero { padding: 120px 0 60px; }
-      .hero h1 { font-size: 2rem; }
-      .hero-actions { flex-direction: column; }
-      .stats { flex-wrap: wrap; gap: 24px; }
+      .hero { padding: 100px 0 40px; }
+      .hero h1 { font-size: 1.75rem; }
+      .hero p { font-size: 1rem; }
+      .hero-actions { flex-direction: column; gap: 12px; }
+      .hero-actions .btn { width: 100%; text-align: center; }
+      .stats { flex-wrap: wrap; gap: 20px; justify-content: center; }
+      .stat-item { text-align: center; }
+      .section-title h2 { font-size: 1.5rem; }
+      .feature-card { padding: 20px; }
+      .code-block { padding: 16px; font-size: 13px; }
+      .quick-start-card { padding: 20px; }
+      footer { padding: 30px 0 20px; }
+      footer .row > div { margin-bottom: 24px; text-align: center; }
     }
   </style>
 </head>
