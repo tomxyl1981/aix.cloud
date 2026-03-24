@@ -8,49 +8,53 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.min.css">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <style>
-    :root { --primary: #6366f1; --primary-dark: #4f46e5; --primary-light: #818cf8; --light-bg: #f8fafc; --glass-bg: rgba(255,255,255,0.06); --glass-border: rgba(255,255,255,0.12); }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif; background: #ffffff; color: #1e293b; min-height: 100vh; }
-    .navbar { background: rgba(255,255,255,0.95)!important; backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); padding: 16px 0; }
-    .navbar-brand { font-size: 24px; font-weight: 700; background: linear-gradient(135deg, var(--primary-light), var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .nav-link { color: #6b7280!important; font-weight: 500; padding: 8px 20px!important; border-radius: 8px; }
-    .nav-link:hover, .nav-link.active { color: #4b5563!important; background: var(--glass-bg); }
-    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border: none; padding: 10px 24px; border-radius: 10px; font-weight: 600; }
-    .container { max-width: 1000px; padding: 100px 24px 60px; }
-    .page-header { text-align: center; margin-bottom: 50px; }
-    .page-header h1 { font-size: 3rem; font-weight: 700; margin-bottom: 16px; }
-    .page-header p { color: #9ca3af; }
-    .doc-card { background: linear-gradient(145deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%); border: 1px solid var(--glass-border); border-radius: 20px; padding: 32px; margin-bottom: 24px; }
-    .doc-card h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 16px; color: var(--primary-light); }
-    .doc-card h3 { font-size: 1.15rem; font-weight: 600; margin: 24px 0 12px; }
-    .doc-card p, .doc-card li { color: #4b5563; line-height: 1.8; }
-    .doc-card code { background: rgba(99,102,241,0.2); color: var(--primary-light); padding: 2px 8px; border-radius: 6px; font-family: monospace; }
-    .code-block { background: linear-gradient(145deg, #ffffff 0%, #12121a 100%); border: 1px solid var(--glass-border); border-radius: 12px; padding: 20px; margin: 16px 0; overflow-x: auto; font-family: monospace; font-size: 14px; line-height: 1.6; color: #e0e0e0; }
-    .keyword { color: #c792ea; }
-    .string { color: #c3e88d; }
-    .function { color: #82aaff; }
-    .comment { color: #546e7a; }
-    footer { background: rgba(0,0,0,0.5); border-top: 1px solid var(--glass-border); padding: 40px 0; text-align: center; color: rgba(255,255,255,0.4); font-size: 14px; }
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --text-primary: #1a1a1a;
+      --text-secondary: #6b7280;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f9fafb;
+      --border-color: #e5e7eb;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+    .navbar { background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); padding: 16px 0; position: fixed; width: 100%; top: 0; z-index: 1000; }
+    .navbar-brand { font-size: 22px; font-weight: 700; color: var(--primary) !important; text-decoration: none; }
+    .nav-link { color: var(--text-secondary) !important; font-weight: 500; padding: 8px 16px !important; border-radius: 8px; text-decoration: none; }
+    .nav-link:hover, .nav-link.active { color: var(--text-primary) !important; background: var(--bg-secondary); }
+    .btn-primary { background: var(--primary); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; color: white; text-decoration: none; }
+    .container { max-width: 900px; margin: 0 auto; padding: 120px 24px 60px; }
+    .page-header { text-align: center; margin-bottom: 48px; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 12px; }
+    .page-header p { color: var(--text-secondary); }
+    .doc-card { background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 32px; margin-bottom: 24px; }
+    .doc-card h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 16px; color: var(--primary); }
+    .doc-card h3 { font-size: 1.1rem; font-weight: 600; margin: 24px 0 12px; color: var(--text-primary); }
+    .doc-card p, .doc-card li { color: var(--text-secondary); line-height: 1.8; }
+    .doc-card code { background: var(--bg-secondary); color: var(--primary); padding: 2px 8px; border-radius: 6px; font-family: monospace; }
+    .code-block { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin: 16px 0; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.6; color: var(--text-primary); }
+    .code-block .keyword { color: #7c3aed; }
+    .code-block .string { color: #059669; }
+    .code-block .function { color: #2563eb; }
+    .code-block .comment { color: #9ca3af; }
+    footer { background: var(--bg-primary); border-top: 1px solid var(--border-color); padding: 40px 0; text-align: center; }
+    footer p { color: var(--text-secondary); font-size: 14px; margin: 0; }
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg fixed-top">
-    <div class="container">
+  <nav class="navbar">
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;">
       <a class="navbar-brand" href="/">AIX Cloud</a>
-      <button class="navbar-toggler bg-transparent border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><i class="bi bi-list text-white fs-1"></i></button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item"><a class="nav-link" href="/models">模型</a></li>
-          <li class="nav-item"><a class="nav-link" href="/chat">聊天</a></li>
-          <li class="nav-item"><a class="nav-link" href="/industries">千行百业</a></li>
-          <li class="nav-item"><a class="nav-link" href="/pricing">价格</a></li>
-          <li class="nav-item"><a class="nav-link active" href="/docs">文档</a></li>
-        </ul>
-        <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="/login">登录</a></li>
-          <li class="nav-item"><a class="btn btn-primary ms-2" href="/login">开始使用</a></li>
-        </ul>
-      </div>
+      <ul style="display:flex;gap:8px;list-style:none;margin:0;padding:0;">
+        <li><a class="nav-link" href="/models">模型</a></li>
+        <li><a class="nav-link" href="/chat">聊天</a></li>
+        <li><a class="nav-link" href="/rankings">排行</a></li>
+        <li><a class="nav-link" href="/pricing">价格</a></li>
+        <li><a class="nav-link active" href="/docs">文档</a></li>
+        <li><a class="nav-link" href="/login">登录</a></li>
+        <li><a class="btn-primary" href="/login" style="padding:8px 16px;">开始使用</a></li>
+      </ul>
     </div>
   </nav>
 
@@ -66,9 +70,9 @@
       <h3>安装 SDK</h3>
       <div class="code-block">pip install aixcloud</div>
       <h3>Python 示例</h3>
-      <div class="code-block"><span class="keyword">from</span> aixcloud <span class="keyword">import</span> AIX
+      <div class="code-block"><span class="keyword">from</span> aixcloud <span class="keyword">import</span> AIII
 
-client = AIX(
+client = AIII(
     api_key=<span class="string">"sk-aix-xxxx"</span>,
     base_url=<span class="string">"https://api.aix.cloud/v1"</span>
 )
@@ -98,67 +102,27 @@ response = client.chat.completions.<span class="function">create</span>(
       <div class="code-block">POST https://api.aix.cloud/v1/chat/completions</div>
       <h3>请求参数</h3>
       <ul>
-        <li><code>model</code> - 模型名称，目前仅支持 <strong>AIX-Tech</strong></li>
-        <li><code>messages</code> - 消息数组，格式为 <code>[{"role": "user", "content": "内容"}]</code></li>
+        <li><code>model</code> - 模型名称</li>
+        <li><code>messages</code> - 消息数组</li>
         <li><code>temperature</code> - 生成随机性（0-2，默认 0.7）</li>
         <li><code>max_tokens</code> - 最大生成 token 数</li>
-        <li><code>stream</code> - 是否流式返回（true/false）</li>
+        <li><code>stream</code> - 是否流式返回</li>
       </ul>
-    </div>
-
-    <div class="doc-card" id="streaming">
-      <h2>🌊 流式响应</h2>
-      <div class="code-block"><span class="keyword">from</span> aixcloud <span class="keyword">import</span> AIX
-
-client = AIX(
-    api_key=<span class="string">"sk-aix-xxxx"</span>,
-    base_url=<span class="string">"https://api.aix.cloud/v1"</span>
-)
-
-stream = client.chat.completions.<span class="function">create</span>(
-    model=<span class="string">"AIX-Tech"</span>,
-    messages=[{<span class="keyword">role</span>: <span class="string">"user"</span>, <span class="keyword">content</span>: <span class="string">"你好"</span>}],
-    stream=<span class="keyword">True</span>
-)
-
-<span class="keyword">for</span> chunk <span class="keyword">in</span> stream:
-    <span class="keyword">if</span> chunk.choices[0].delta.content:
-        <span class="keyword">print</span>(chunk.choices[0].delta.content, end=<span class="string">""</span>)</div>
     </div>
 
     <div class="doc-card" id="models">
       <h2>🤖 支持的模型</h2>
-      <p>当前支持的模型：</p>
-      <ul>
-        <li><strong>AIX-Tech</strong> - AIX Cloud 智能模型</li>
-      </ul>
       <p>获取模型列表：</p>
       <div class="code-block">GET https://api.aix.cloud/v1/models</div>
-    </div>
-
-    <div class="doc-card" id="limits">
-      <h2>⏱️ 调用限制</h2>
-      <ul>
-        <li>速率限制：<strong>10 次请求/分钟</strong></li>
-        <li>每个 API Key 独立计算</li>
-      </ul>
-    </div>
-
-    <div class="doc-card" id="errors">
-      <h2>⚠️ 错误处理</h2>
-      <ul>
-        <li><code>400</code> - 请求参数错误</li>
-        <li><code>401</code> - API Key 无效</li>
-        <li><code>402</code> - 余额不足</li>
-        <li><code>429</code> - 请求频率超限</li>
-        <li><code>500</code> - 服务器内部错误</li>
-      </ul>
     </div>
   </div>
 
   <footer>
-    © 2026 AIX Cloud. All rights reserved.
+    <div class="container">
+      <p>© 2026 AIX Cloud. All rights reserved.</p>
+    </div>
   </footer>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
